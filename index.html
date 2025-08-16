@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Administración del Dinero – Nivel Intermedio</title>
+  <style>
+    :root{
+      --bg:#0f1115; --panel:#151923; --ink:#e8ecf1; --muted:#aab3c0; --brand:#5cc8ff; --accent:#ffd166; --ok:#7bd389;
+      --stroke:#1e2433; --stroke-2:#223049;
+    }
+    /* Base móvil primero */
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--ink);
+      background:linear-gradient(180deg,#0f1115 0%, #111828 100%);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Helvetica,Arial,sans-serif;
+      font-size:16px; line-height:1.5;
+      -webkit-text-size-adjust:100%;
+      text-rendering:optimizeLegibility;
+    }
+    /* Tipos fluidos */
+    h1{font-weight:800; letter-spacing:.2px; margin:0 0 .4rem;
+       font-size:clamp(1.6rem, 4vw + .8rem, 2.2rem)}
+    h2{margin:0 0 .5rem; font-size:clamp(1.2rem, 2.2vw + .8rem, 1.6rem)}
+    h3{margin:1rem 0 .4rem; font-size:clamp(1.05rem, 1.2vw + .9rem, 1.25rem)}
+    p{margin:.4rem 0}
+    ul,ol{margin:.4rem 0 .8rem 1.1rem}
+    li{margin:.35rem 0}
+
+    /* Accesibilidad */
+    a{color:#d9e8ff; text-decoration:none}
+    a:focus-visible, button:focus-visible{outline:2px solid var(--brand); outline-offset:2px; border-radius:8px}
+    .skip{
+      position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden;
+    }
+    .skip:focus{
+      position:fixed; left:12px; top:12px; width:auto; height:auto; padding:.5rem .75rem;
+      background:#121826; color:#e6f2ff; border:1px solid var(--stroke-2); border-radius:10px; z-index:1000;
+    }
+
+    header{
+      padding:28px 16px 22px;
+      text-align:center;
+      background:radial-gradient(900px 360px at 50% -20%, #1a2030, transparent);
+      border-bottom:1px solid #1f2738;
+    }
+    header p{max-width:62ch; margin:.25rem auto 0; color:var(--muted)}
+    .badges{margin-top:.75rem; display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
+    .badge{
+      border:1px solid var(--stroke-2); background:#121724; color:#cfe7ff;
+      padding:6px 10px; border-radius:999px; font-size:12px; line-height:1
+    }
+    .hero-cta{margin-top:.9rem; display:flex; gap:10px; justify-content:center; flex-wrap:wrap}
+    .btn{
+      background:#1c273d; color:#e6f2ff; border:1px solid #2a3652;
+      padding:12px 14px; border-radius:12px; min-height:44px; display:inline-flex; align-items:center; justify-content:center
+    }
+    .btn.brand{background:#123654; border-color:#2a9df4}
+
+    nav{
+      position:sticky; top:0; z-index:20; background:#0f131e; border-bottom:1px solid #1f2738;
+      overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch
+    }
+    nav .rail{display:flex; gap:8px; padding:10px 12px}
+    nav a{
+      color:#e6f2ff; border:1px solid #233149; padding:10px 12px; border-radius:12px; font-size:14px;
+      display:inline-flex; align-items:center; min-height:44px
+    }
+    nav a.prio{border-color:#2f5bff40; background:#1a2340}
+
+    main{max-width:920px; margin:0 auto; padding:20px 12px 80px}
+    section.module{
+      background:var(--panel); border:1px solid var(--stroke); border-radius:16px; padding:16px; margin:14px 0 22px;
+      scroll-margin-top:72px
+    }
+    .meta{display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 10px}
+    .meta .chip{
+      font-size:12px; color:#b8c4d6; border:1px dashed #2a3652; padding:4px 8px; border-radius:8px
+    }
+    .quote{border-left:3px solid #2a9df4; padding:10px 12px; background:#131a26; color:#cfe7ff; border-radius:6px; margin:10px 0}
+    .note{border:1px solid #2a3652; background:#121826; padding:12px; border-radius:10px; color:#d8e6ff; margin:12px 0}
+
+    .videos{display:grid; gap:10px; grid-template-columns:1fr; margin-top:8px}
+    @media (min-width:480px){ .videos{grid-template-columns:repeat(2,1fr)} }
+    @media (min-width:900px){ .videos{grid-template-columns:repeat(3,1fr)} }
+    .video-card{background:#0f1522; border:1px solid var(--stroke-2); border-radius:12px; overflow:hidden}
+    .video-card iframe{width:100%; aspect-ratio:16/9; display:block; background:#000}
+    .video-card .caption{padding:9px 10px; font-size:13px; color:#cfe7ff; border-top:1px solid var(--stroke-2)}
+
+    .grid-2{display:grid; gap:10px; grid-template-columns:1fr}
+    @media (min-width:700px){ .grid-2{grid-template-columns:repeat(2,1fr)} }
+
+    footer{max-width:920px; margin:0 auto 80px; padding:0 12px; color:#aab3c0}
+    .small{font-size:13px; color:#aab3c0}
+
+    /* Preferencias de movimiento reducido */
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+    }
+  </style>
+</head>
+<body>
+  <a href="#indice" class="skip">Saltar a navegación</a>
+
+  <header id="inicio">
+    <h1>Administración del Dinero – Nivel Intermedio</h1>
+    <p>
+      Curso práctico para jóvenes y adultos con ingresos irregulares en Venezuela (Urimare / Catia La Mar).
+      Enfoque en hábitos, toma de decisiones y resultados medibles. Ruta prioritaria: Fondo de emergencia → Flujo y presupuesto → Cumplimiento básico SENIAT.
+    </p>
+    <div class="badges">
+      <span class="badge">Práctico</span>
+      <span class="badge">Basado en hábitos</span>
+      <span class="badge">Decisiones con datos</span>
+      <span class="badge">Orientado a Venezuela</span>
+    </div>
+    <div class="hero-cta">
+      <a class="btn brand" href="#modulo-3">Comenzar por Módulo 3</a>
+      <a class="btn" href="#indice">Ver todos los módulos</a>
+    </div>
+  </header>
+
+  <nav>
+    <div class="rail" id="indice">
+      <a class="prio" href="#modulo-3">M3 Fondo de emergencia</a>
+      <a class="prio" href="#modulo-1">M1 Flujo y presupuesto</a>
+      <a class="prio" href="#modulo-7">M7 Impuestos (VE)</a>
+      <a href="#modulo-0">M0 Mentalidad y objetivos</a>
+      <a href="#modulo-2">M2 Deuda y score</a>
+      <a href="#modulo-4">M4 Inversión: bases</a>
+      <a href="#modulo-5">M5 Activos e intermediarios</a>
+      <a href="#modulo-6">M6 Plan financiero personal</a>
+      <a href="#modulo-8">M8 Herramientas y automatización</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="note">
+      <strong>Nota práctica:</strong> por la inestabilidad y la irregularidad de ingresos en Venezuela, prioriza primero el Módulo 3 (fondo de emergencia), luego el Módulo 1 (flujo/presupuesto) y el Módulo 7 (cumplimiento básico). Al diseñar tu IPS (Módulo 4), considera la diversificación por moneda.
+    </section>
+
+    <!-- Módulo 3 -->
+    <section id="modulo-3" class="module">
+      <h2>🛡️ Módulo 3: Fondo de emergencia y seguros</h2>
+      <div class="meta">
+        <span class="chip">Objetivo: 3–6 meses (o más con ingresos volátiles)</span>
+        <span class="chip">Liquidez y bajo riesgo</span>
+      </div>
+
+      <h3>Objetivos</h3>
+      <ul>
+        <li><strong>Calcular:</strong> meta (meses de gastos).</li>
+        <li><strong>Elegir:</strong> dónde guardar y cómo automatizar aportes.</li>
+        <li><strong>Diferenciar:</strong> emergencias reales vs. gastos previsibles.</li>
+      </ul>
+
+      <h3>Contenido clave</h3>
+      <ul>
+        <li><strong>Fondo de emergencia:</strong> red de seguridad para imprevistos; se recomienda 3–6 meses (más si ingresos volátiles) y colocarlo en instrumentos líquidos de bajo riesgo.</li>
+        <li><strong>Contexto Venezuela:</strong> por inestabilidad e ingresos irregulares, el fondo es esencial; algunas personas resguardan divisas fuera del sistema bancario por accesibilidad y preservación.</li>
+      </ul>
+      <div class="quote">Definir qué es emergencia, mantenerlo separado del ahorro para metas y reponerlo tras su uso son claves de disciplina financiera.</div>
+
+      <h3>Actividad práctica</h3>
+      <ul>
+        <li><strong>Cálculo (15 min):</strong> gastos esenciales x meses objetivo.</li>
+        <li><strong>Setup (20 min):</strong> cuenta separada + transferencia automática (día de cobro).</li>
+      </ul>
+
+      <h3>Cuestionario (V/F)</h3>
+      <ol>
+        <li>El fondo es para vacaciones si falta dinero. — <strong>Respuesta:</strong> F</li>
+        <li>3–6 meses es guía general; puede aumentar según volatilidad. — <strong>Respuesta:</strong> V</li>
+        <li>Debe estar en activos de alta liquidez y bajo riesgo. — <strong>Respuesta:</strong> V</li>
+        <li>Si lo usas, no es necesario reponerlo. — <strong>Respuesta:</strong> F</li>
+        <li>En contextos inestables, el fondo es menos importante. — <strong>Respuesta:</strong> F</li>
+        <li>Gastos médicos imprevistos son uso válido. — <strong>Respuesta:</strong> V</li>
+        <li>Es parte del portafolio de largo plazo. — <strong>Respuesta:</strong> F</li>
+        <li>Automatizar aportes acelera su construcción. — <strong>Respuesta:</strong> V</li>
+      </ol>
+
+      <h3>Videos sugeridos</h3>
+      <div class="videos">
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/gho246_2EuA?rel=0"
+                  title="Fondo de emergencia: cuánto y dónde" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">El Cerebro del Inversor — Fondo de emergencia: cuánto y dónde</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/5A1C0X6hJR4?rel=0"
+                  title="Liquidez y preservación del capital" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Value School — Liquidez y preservación del capital</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/49HUroxXlaA?rel=0"
+                  title="Prioriza tu colchón financiero" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Aprende Finanzas YA — Prioriza tu colchón financiero</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Módulo 1 -->
+    <section id="modulo-1" class="module">
+      <h2>📊 Módulo 1: Flujo de caja y presupuesto</h2>
+
+      <h3>Objetivos</h3>
+      <ul>
+        <li><strong>Distinguir:</strong> presupuesto (plan) vs. flujo de caja (real).</li>
+        <li><strong>Construir:</strong> presupuesto mensual y seguimiento 30 días.</li>
+        <li><strong>Ajustar:</strong> categorías y techos de gasto.</li>
+      </ul>
+
+      <h3>Contenido clave</h3>
+      <ul>
+        <li><strong>Presupuesto:</strong> plan de ingresos y gastos que guía decisiones y evita déficit; componentes: ingresos, gastos fijos/variables, ahorro e inversión; revisar y ajustar mensualmente.</li>
+        <li><strong>Flujo de caja:</strong> registro de entradas y salidas reales; mantenerlo positivo asegura liquidez para gastos y emergencias.</li>
+      </ul>
+      <div class="quote">Apps y hojas de cálculo facilitan el seguimiento y análisis; la constancia en ahorro y revisión mensual mejora estabilidad financiera.</div>
+
+      <h3>Actividad práctica</h3>
+      <ul>
+        <li><strong>Mapa de gastos (30 min):</strong> lista categorías fijas/variables; define techos.</li>
+        <li><strong>Tablero 30 días (10 min de setup):</strong> registra diario e indicadores: tasa de ahorro, desvíos, saldo proyectado.</li>
+      </ul>
+
+      <h3>Cuestionario (V/F)</h3>
+      <ol>
+        <li>El flujo de caja es un plan y el presupuesto un registro. — <strong>Respuesta:</strong> F</li>
+        <li>Gastos variables incluyen ocio y transporte extra. — <strong>Respuesta:</strong> V</li>
+        <li>Monitorear y ajustar es parte del presupuesto eficaz. — <strong>Respuesta:</strong> V</li>
+        <li>Un flujo de caja positivo garantiza liquidez. — <strong>Respuesta:</strong> V</li>
+        <li>No se debe incluir ahorro en el presupuesto. — <strong>Respuesta:</strong> F</li>
+        <li>La estacionalidad afecta el presupuesto. — <strong>Respuesta:</strong> V</li>
+        <li>El presupuesto elimina toda incertidumbre. — <strong>Respuesta:</strong> F</li>
+        <li>Hojas de cálculo son útiles para seguimiento. — <strong>Respuesta:</strong> V</li>
+      </ol>
+
+      <h3>Videos sugeridos</h3>
+      <div class="videos">
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/kmi6EugSR0E?rel=0"
+                  title="Cómo hacer tu presupuesto en 30 minutos" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">El Club de las Finanzas Personales — Presupuesto en 30 minutos</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/YBCfKPn22Ig?rel=0"
+                  title="Flujo de caja para no contadores" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Santiago Salom — Flujo de caja</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/4trjnw4tI5A?rel=0"
+                  title="Variables vs fijos: optimiza tus gastos" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Balio — Variables vs fijos</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Módulo 7 -->
+    <section id="modulo-7" class="module">
+      <h2>🧾 Módulo 7: Impuestos y cumplimiento (introducción, Venezuela)</h2>
+
+      <h3>Objetivos</h3>
+      <ul>
+        <li><strong>Conocer:</strong> instituciones y portales clave.</li>
+        <li><strong>Identificar:</strong> obligaciones básicas y calendario.</li>
+        <li><strong>Adoptar:</strong> hábitos de registro y resguardo documental.</li>
+      </ul>
+
+      <h3>Contenido clave</h3>
+      <ul>
+        <li><strong>SENIAT:</strong> portal oficial para RIF, declaraciones (ISLR, IVA, etc.), instructivos, calendarios y providencias vigentes.</li>
+        <li><strong>Cumplimiento tributario:</strong> normativas cambian y demandan precisión y transparencia; apoyo profesional puede optimizar presentación y reducir riesgos.</li>
+      </ul>
+      <div class="quote">Llevar trazabilidad de ingresos/gastos y conservar soportes facilita declaraciones y evita sanciones; consulta el calendario vigente y guías del portal oficial.</div>
+
+      <h3>Actividad práctica</h3>
+      <ul>
+        <li><strong>Checklist documental (20 min):</strong> RIF, contratos, facturas, soportes de gasto, registros de ingresos.</li>
+        <li><strong>Calendario (15 min):</strong> fechas clave y recordatorios trimestrales.</li>
+      </ul>
+
+      <h3>Cuestionario (V/F)</h3>
+      <ol>
+        <li>El RIF es irrelevante para personas naturales. — <strong>Respuesta:</strong> F</li>
+        <li>El portal del SENIAT centraliza trámites tributarios. — <strong>Respuesta:</strong> V</li>
+        <li>Las reglas fiscales son estáticas año a año. — <strong>Respuesta:</strong> F</li>
+        <li>La trazabilidad reduce riesgo de sanciones. — <strong>Respuesta:</strong> V</li>
+        <li>No es necesario guardar facturas. — <strong>Respuesta:</strong> F</li>
+        <li>Profesionales tributarios pueden apoyar cumplimiento. — <strong>Respuesta:</strong> V</li>
+        <li>Ignorar el calendario no tiene consecuencias. — <strong>Respuesta:</strong> F</li>
+        <li>Las guías oficiales orientan el proceso. — <strong>Respuesta:</strong> V</li>
+      </ol>
+
+      <h3>Videos sugeridos</h3>
+      <div class="videos">
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/6YxFoB5YNDQ?rel=0"
+                  title="Cómo sacar el RIF" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">SENIAT / Contadores VE — Cómo sacar el RIF</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/rA4GMAN8tUA?rel=0"
+                  title="Tendencias fiscales VE" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Forvis Mazars — Tendencias fiscales VE</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/toeTk5xBU4g?rel=0"
+                  title="Buenas prácticas de cumplimiento" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">EY Latinoamérica — Buenas prácticas de cumplimiento</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Módulo 0 -->
+    <section id="modulo-0" class="module">
+      <h2>🧠 Módulo 0: Mentalidad financiera y objetivos</h2>
+
+      <h3>Objetivos</h3>
+      <ul>
+        <li><strong>Comprender:</strong> cómo las creencias influyen en decisiones de dinero.</li>
+        <li><strong>Definir:</strong> 3 metas SMART (3, 12 y 36 meses).</li>
+        <li><strong>Alinear:</strong> hábitos con propósito personal.</li>
+      </ul>
+
+      <h3>Contenido clave</h3>
+      <ul>
+        <li><strong>Mentalidad financiera:</strong> pensamientos y creencias sobre el dinero moldean hábitos y resultados; se puede entrenar y mejorar con educación y práctica.</li>
+        <li><strong>Tipos de mentalidad:</strong> patrones potenciadores (abundancia, responsabilidad, visión a largo plazo) vs. limitantes (escasez, miedo, evitación) y su efecto en estrés y decisiones.</li>
+      </ul>
+      <div class="quote">La mentalidad financiera es dinámica y afecta la planificación, el ahorro y la toma de riesgos; trabajarla reduce estrés y mejora claridad de objetivos.</div>
+
+      <h3>Actividad práctica</h3>
+      <ul>
+        <li><strong>Diario de creencias (20 min):</strong> lista 5 creencias; reclasifícalas; reescribe 3 limitantes en versiones accionables.</li>
+        <li><strong>Metas SMART (30 min):</strong> redacta 3 metas (3, 12, 36 meses) con monto, fecha y métrica.</li>
+      </ul>
+
+      <h3>Cuestionario (V/F)</h3>
+      <ol>
+        <li>La mentalidad financiera es estática. — <strong>Respuesta:</strong> F</li>
+        <li>Una creencia limitante puede afectar la tasa de ahorro. — <strong>Respuesta:</strong> V</li>
+        <li>Definir objetivos SMART ayuda a priorizar recursos. — <strong>Respuesta:</strong> V</li>
+        <li>El estrés financiero no se relaciona con mentalidad. — <strong>Respuesta:</strong> F</li>
+        <li>Reescribir creencias es una técnica de intervención cognitiva. — <strong>Respuesta:</strong> V</li>
+        <li>Propósito y metas no deben mezclarse con finanzas. — <strong>Respuesta:</strong> F</li>
+        <li>La mentalidad de abundancia implica disciplina y responsabilidad. — <strong>Respuesta:</strong> V</li>
+        <li>La educación financiera no cambia hábitos. — <strong>Respuesta:</strong> F</li>
+      </ol>
+
+      <h3>Videos sugeridos</h3>
+      <div class="videos">
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/wJBUsb-FBy0?rel=0"
+                  title="Cambia tu relación con el dinero" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Moris Dieck — Cambia tu relación con el dinero</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/_FkLdIZUKZE?rel=0"
+                  title="Mentalidad del inversor a largo plazo" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Value School — Mentalidad del inversor a largo plazo</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/sIF1QZyjnVY?rel=0"
+                  title="Hábitos financieros que sí funcionan" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Balio — Hábitos financieros que sí funcionan</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Módulo 2 -->
+    <section id="modulo-2" class="module">
+      <h2>💳 Módulo 2: Deuda y score de crédito</h2>
+
+      <h3>Objetivos</h3>
+      <ul>
+        <li><strong>Entender:</strong> factores del score y su impacto.</li>
+        <li><strong>Aplicar:</strong> métodos avalancha/bola de nieve.</li>
+        <li><strong>Diseñar:</strong> plan de pago con fecha deuda cero.</li>
+      </ul>
+
+      <h3>Contenido clave</h3>
+      <ul>
+        <li><strong>Score crediticio:</strong> número (aprox. 300–850) que refleja solvencia; factores típicos y pesos orientativos (historial de pagos, endeudamiento, antigüedad, nuevos créditos, mezcla) según modelos como FICO/VantageScore.</li>
+        <li><strong>Uso del score:</strong> determina acceso a crédito y condiciones (tasas, montos); distintos países/entidades tienen sistemas locales (Equifax/TransUnion, etc.).</li>
+      </ul>
+      <div class="quote">Conocer el score y sus factores permite estrategias para mejorarlo: pagar a tiempo, bajar utilización de crédito, mantener antigüedad y evitar aplicaciones frecuentes.</div>
+
+      <h3>Actividad práctica</h3>
+      <ul>
+        <li><strong>Inventario de deudas (20 min):</strong> saldo, TAE/TEM, cuota, fecha, garantía.</li>
+        <li><strong>Plan de pago (40 min):</strong> avalancha (por tasa) o bola de nieve (por saldo); calcula ahorro de intereses.</li>
+      </ul>
+
+      <h3>Cuestionario (V/F)</h3>
+      <ol>
+        <li>El historial de pagos suele ser el factor de mayor peso. — <strong>Respuesta:</strong> V</li>
+        <li>Cerrar tarjetas antiguas mejora el score. — <strong>Respuesta:</strong> F</li>
+        <li>La utilización de crédito afecta el score. — <strong>Respuesta:</strong> V</li>
+        <li>Pedir varios créditos en poco tiempo no influye. — <strong>Respuesta:</strong> F</li>
+        <li>La mezcla de tipos de crédito puede sumar puntos. — <strong>Respuesta:</strong> V</li>
+        <li>La bola de nieve prioriza la tasa más alta. — <strong>Respuesta:</strong> F</li>
+        <li>La avalancha minimiza intereses totales. — <strong>Respuesta:</strong> V</li>
+        <li>El score no afecta tasas de interés. — <strong>Respuesta:</strong> F</li>
+      </ol>
+
+      <h3>Videos sugeridos</h3>
+      <div class="videos">
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/yUK-UAmEDLc?rel=0"
+                  title="Cómo salir de deudas rápido" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Moris Dieck — Cómo salir de deudas rápido</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/5_s7M859KCk?rel=0"
+                  title="Psicología de la deuda" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Jürgen Klaric — Psicología de la deuda</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/Xn2VRJN6p8A?rel=0"
+                  title="Score de crédito explicado" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Finance Gear (ES) — Score de crédito explicado</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Módulo 4 -->
+    <section id="modulo-4" class="module">
+      <h2>📈 Módulo 4: Inversión — bases y métricas</h2>
+
+      <h3>Objetivos</h3>
+      <ul>
+        <li><strong>Comprender:</strong> relación riesgo–rentabilidad–liquidez.</li>
+        <li><strong>Definir:</strong> asignación objetivo y reglas de rebalanceo.</li>
+        <li><strong>Redactar:</strong> un IPS personal.</li>
+      </ul>
+
+      <h3>Contenido clave</h3>
+      <ul>
+        <li><strong>Tríada de los activos:</strong> liquidez, riesgo, rentabilidad.</li>
+        <li><strong>Asignación y diversificación:</strong> distribuir por clases de activos, sectores y monedas; ajustar con rebalanceo periódico.</li>
+      </ul>
+      <div class="quote">Los agentes ordenan carteras en función de liquidez, riesgo y rentabilidad; mayores rendimientos tienden a implicar menor liquidez y/o mayor riesgo.</div>
+      <div class="note"><strong>Fórmulas útiles:</strong> A = P(1 + r/n)^{n t} &nbsp; | &nbsp; CAGR = (FV/PV)^{1/n} - 1</div>
+
+      <h3>Actividad práctica</h3>
+      <ul>
+        <li><strong>IPS (45 min):</strong> objetivo, horizonte, aportes, tolerancia, asignación, reequilibrio, límites de costos.</li>
+        <li><strong>Simulación (30 min):</strong> desviación ±5% por clase y operaciones de rebalanceo.</li>
+      </ul>
+
+      <h3>Cuestionario (V/F)</h3>
+      <ol>
+        <li>Mayor rentabilidad siempre implica menor riesgo. — <strong>Respuesta:</strong> F</li>
+        <li>La liquidez mide facilidad y certeza de realización sin pérdidas. — <strong>Respuesta:</strong> V</li>
+        <li>Diversificar reduce riesgo específico. — <strong>Respuesta:</strong> V</li>
+        <li>El rebalanceo busca volver a la asignación objetivo. — <strong>Respuesta:</strong> V</li>
+        <li>El interés simple crece más que el compuesto. — <strong>Respuesta:</strong> F</li>
+        <li>El IPS fija reglas antes de invertir. — <strong>Respuesta:</strong> V</li>
+        <li>La correlación no afecta volatilidad de cartera. — <strong>Respuesta:</strong> F</li>
+        <li>El horizonte influye en la asignación. — <strong>Respuesta:</strong> V</li>
+      </ol>
+
+      <h3>Videos sugeridos</h3>
+      <div class="videos">
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/w8zECqnezRU?rel=0"
+                  title="Diversificación y asignación de activos" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Value School — Diversificación y asignación de activos</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/Uh4BZHacm7g?rel=0"
+                  title="Riesgo vs. volatilidad" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">El Arte de Invertir — Riesgo vs. volatilidad</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/wFlBrYa4nrw?rel=0"
+                  title="Asset Allocation Basics" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">The Plain Bagel — Asset Allocation Basics (subtítulos)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Módulo 5 -->
+    <section id="modulo-5" class="module">
+      <h2>💼 Módulo 5: Activos e intermediarios</h2>
+
+      <h3>Objetivos</h3>
+      <ul>
+        <li><strong>Identificar:</strong> clases de activos (renta fija/variable, derivados, alternativos).</li>
+        <li><strong>Entender:</strong> función de bancos, brokers, gestoras, aseguradoras.</li>
+        <li><strong>Comparar:</strong> liquidez, riesgos y horizontes.</li>
+      </ul>
+
+      <h3>Contenido clave</h3>
+      <ul>
+        <li><strong>Sistema financiero:</strong> canaliza ahorro de superávit a déficit mediante activos, intermediarios y mercados.</li>
+        <li><strong>Activos financieros:</strong> renta fija (bonos, pagarés), renta variable (acciones), derivados (futuros, opciones).</li>
+        <li><strong>Intermediarios y mercados:</strong> conectan oferentes y demandantes, dan liquidez, descubren precios y reducen costos de transacción.</li>
+      </ul>
+      <div class="quote">Elegir vehículo e intermediario adecuado al objetivo y horizonte reduce costos y fricciones, mejorando la experiencia de inversión.</div>
+
+      <h3>Actividad práctica</h3>
+      <ul>
+        <li><strong>Matriz comparativa (30 min):</strong> objetivos (colchón, mediano, largo) vs. activos (liquidez, riesgo, moneda).</li>
+        <li><strong>Costeo (20 min):</strong> comisiones (compra/venta, custodia, TER, spreads) por vehículo.</li>
+      </ul>
+
+      <h3>Cuestionario (V/F)</h3>
+      <ol>
+        <li>Renta fija define pagos de antemano. — <strong>Respuesta:</strong> V</li>
+        <li>Acciones son renta fija. — <strong>Respuesta:</strong> F</li>
+        <li>Los derivados dependen de un subyacente. — <strong>Respuesta:</strong> V</li>
+        <li>Los mercados dan liquidez y descubren precios. — <strong>Respuesta:</strong> V</li>
+        <li>Los intermediarios siempre emiten activos primarios. — <strong>Respuesta:</strong> F</li>
+        <li>Mayor liquidez suele implicar menor rentabilidad esperada, ceteris paribus. — <strong>Respuesta:</strong> V</li>
+        <li>Un broker es un intermediario financiero. — <strong>Respuesta:</strong> V</li>
+        <li>No hay diferencia entre activos negociables y no negociables. — <strong>Respuesta:</strong> F</li>
+      </ol>
+
+      <h3>Videos sugeridos</h3>
+      <div class="videos">
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/M2R_VX3rbpA?rel=0"
+                  title="Tipos de activos y para qué sirven" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Value School — Tipos de activos</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/v8swPugng_U?rel=0"
+                  title="Derivados para principiantes" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">iBroker (ES) — Derivados para principiantes</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/zguM6YxtWJk?rel=0"
+                  title="Fondos vs. ETFs" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Balio — Fondos vs. ETFs</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Módulo 6 -->
+    <section id="modulo-6" class="module">
+      <h2>📅 Módulo 6: Plan financiero personal</h2>
+
+      <h3>Objetivos</h3>
+      <ul>
+        <li><strong>Evaluar:</strong> situación actual (ingresos, gastos, activos, pasivos).</li>
+        <li><strong>Diseñar:</strong> plan a 12 meses con escenarios.</li>
+        <li><strong>Implementar:</strong> hábitos, automatizaciones y revisiones.</li>
+      </ul>
+
+      <h3>Contenido clave</h3>
+      <ul>
+        <li><strong>Plan financiero:</strong> organizar dinero, alinear metas, reducir deudas, gestionar riesgos y maximizar ahorro/inversión; requiere revisión periódica y personalización.</li>
+        <li><strong>Pasos clave:</strong> diagnóstico, objetivos, presupuesto, estrategia de deudas, ahorro/inversión, control y ajuste.</li>
+        <li><strong>Enfoque educativo:</strong> conecta metas de vida con administración de recursos, integrando teoría y práctica.</li>
+      </ul>
+      <div class="quote">Calcular patrimonio neto (activos − pasivos), identificar excedentes/déficits y hábitos de consumo es base del diseño del plan.</div>
+
+      <h3>Actividad práctica</h3>
+      <ul>
+        <li><strong>Estado personal (30 min):</strong> inventario de activos/pasivos; patrimonio neto.</li>
+        <li><strong>Plan 12 meses (45 min):</strong> base, optimista y estresado; gatillos de ajuste.</li>
+      </ul>
+
+      <h3>Cuestionario (V/F)</h3>
+      <ol>
+        <li>Un plan financiero no debe actualizarse. — <strong>Respuesta:</strong> F</li>
+        <li>Patrimonio neto = activos − pasivos. — <strong>Respuesta:</strong> V</li>
+        <li>El plan integra deudas, ahorro e inversión. — <strong>Respuesta:</strong> V</li>
+        <li>Los escenarios no aportan al plan. — <strong>Respuesta:</strong> F</li>
+        <li>La revisión periódica mejora decisiones. — <strong>Respuesta:</strong> V</li>
+        <li>Sin diagnóstico, el plan sigue siendo sólido. — <strong>Respuesta:</strong> F</li>
+        <li>Las herramientas digitales facilitan el control. — <strong>Respuesta:</strong> V</li>
+        <li>Los objetivos deben ser medibles y con plazo. — <strong>Respuesta:</strong> V</li>
+      </ol>
+
+      <h3>Videos sugeridos</h3>
+      <div class="videos">
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/WF6qLnuh4EA?rel=0"
+                  title="Tu plan financiero en 7 pasos" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Moris Dieck — Tu plan financiero en 7 pasos</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/FRcweJKAlHc?rel=0"
+                  title="Cómo definir metas financieras" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Balio — Cómo definir metas financieras</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/nRatTzECmq8?rel=0"
+                  title="Planificación para largo plazo" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Value School — Planificación para largo plazo</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Módulo 8 -->
+    <section id="modulo-8" class="module">
+      <h2>⚙️ Módulo 8: Herramientas y automatización</h2>
+
+      <h3>Objetivos</h3>
+      <ul>
+        <li><strong>Mapear:</strong> procesos repetitivos a automatizar.</li>
+        <li><strong>Seleccionar:</strong> herramientas para presupuesto, conciliación, recordatorios y reportes.</li>
+        <li><strong>Implementar:</strong> flujos y reglas simples.</li>
+      </ul>
+
+      <h3>Contenido clave</h3>
+      <ul>
+        <li><strong>Automatización financiera:</strong> software para facturación, nómina, cuentas por pagar/cobrar, reportes, presupuestos y cumplimiento.</li>
+        <li><strong>Beneficios y aplicaciones:</strong> control en tiempo real, conciliación bancaria, recordatorios, integración de sistemas.</li>
+      </ul>
+      <div class="quote">Las áreas con mayor automatización son finanzas/contabilidad; buenas prácticas incluyen integrar fuentes de datos, definir reglas claras y monitorear resultados.</div>
+
+      <h3>Actividad práctica</h3>
+      <ul>
+        <li><strong>Mapa de flujos (25 min):</strong> tareas manuales (registro, conciliación, alertas).</li>
+        <li><strong>Setup (30 min):</strong> reglas de etiquetado, recordatorios de pagos, tablero de métricas (ahorro, desvíos, aportes).</li>
+      </ul>
+
+      <h3>Cuestionario (V/F)</h3>
+      <ol>
+        <li>Automatizar aumenta errores humanos. — <strong>Respuesta:</strong> F</li>
+        <li>La conciliación puede automatizarse. — <strong>Respuesta:</strong> V</li>
+        <li>Reportes en tiempo real apoyan decisiones. — <strong>Respuesta:</strong> V</li>
+        <li>No conviene integrar fuentes de datos. — <strong>Respuesta:</strong> F</li>
+        <li>Recordatorios de cobros/pagos son parte del flujo. — <strong>Respuesta:</strong> V</li>
+        <li>La automatización es solo para grandes empresas. — <strong>Respuesta:</strong> F</li>
+        <li>Definir reglas es clave para buenos resultados. — <strong>Respuesta:</strong> V</li>
+        <li>Presupuestos y previsiones pueden apoyarse con software. — <strong>Respuesta:</strong> V</li>
+      </ol>
+
+      <h3>Videos sugeridos</h3>
+      <div class="videos">
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/P_6NFQ2vo5c?rel=0"
+                  title="Automatización financiera para pymes" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Xepelin — Automatización financiera para pymes</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/EmcmapcBFAA?rel=0"
+                  title="Automatiza reportes e ingresos" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Stripe — Automatiza reportes e ingresos</div>
+        </div>
+        <!-- Serie Holded / ContaSimple -->
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/p51NQLcwyxg?rel=0"
+                  title="Conciliaciones Bancarias ERP HOLDED" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Holded — Conciliaciones Bancarias</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/il1yBQbvyBI?rel=0"
+                  title="Concilia tu cuenta contable en segundos" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Holded — Concilia en segundos</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/KuHanhe8Wao?rel=0"
+                  title="Conecta tus bancos" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Holded — Conecta tus bancos</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/3ufAHJ_rRPU?rel=0"
+                  title="Conciliación: paso a paso" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Holded — Paso a paso</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/u_jopMSEX7w?rel=0"
+                  title="Conciliación en 3 pasos" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Holded — En 3 pasos</div>
+        </div>
+        <div class="video-card">
+          <iframe src="https://www.youtube.com/embed/MxzfY5JF3JA?rel=0"
+                  title="Automatizar Holded" loading="lazy" frameborder="0" allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+          <div class="caption">Holded — Automatizar y simplificar</div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="grid-2">
+        <div class="note">
+          <strong>Consejo de ruta:</strong> completa primero M3 → M1 → M7. Luego avanza por el resto según tus metas y tiempo disponible.
+        </div>
+        <div class="note">
+          <strong>Contexto VE:</strong> registra gastos en efectivo a diario, resguarda facturas/soportes, y define tu IPS con diversificación por moneda prudente.
+        </div>
+      </div>
+      <p class="small" style="margin-top:10px">Este contenido integra teoría, actividades prácticas, cuestionarios (V/F) y videos sugeridos por módulo, exactamente como en tu documento maestro.</p>
+    </footer>
+  </main>
+</body>
+</html>
